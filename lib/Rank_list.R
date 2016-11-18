@@ -21,7 +21,6 @@ lyr = lyr[,-c(2,3,6:30)]
 #9. time_signature
 #10. tempo
 #11. duration
-
 test = get_features(files)
 
 #kmeans into 20 clusters
