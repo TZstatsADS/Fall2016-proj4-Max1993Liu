@@ -8,6 +8,7 @@ Term: Fall 2016
 
 + [Data link](https://courseworks2.columbia.edu/courses/11849/files/folder/Project_Files?preview=763391)-(**coursework login required**)
 + [Data description](doc/readme.html)
+
 + Contributor: Zhehao Liu
 
 - Method used: The method used is the combination of **prior word frequency** and **clustered word frequency**. 
