@@ -1,0 +1,105 @@
+#setup
+setwd('/Users/Max/Downloads/Project4_data/')
+library(rhdf5)
+library(dplyr)
+
+files = list.files(path ='.',pattern = '*.h5', recursive = T)
+file_names = basename(files)
+load('./lyr.RData')
+lyr = lyr[,-c(2,3,6:30)]
+
+#-----features------------
+#1. beats/duration
+#2. key 
+#3. loudness
+#4. number of sections
+#5. bin_count of section start/duration
+#6. mean of loudness
+#7. number of segments
+#8. pitch
+#9. time_signature
+#10. tempo
+#11. duration
+
+auto_fill = function(vector, thre){
+    if (length(vector) >= thre){
+        return(vector[1:thre])
+    }  else{
+        num_fill = thre - length(vector)
+        vector = c(vector,sample(vector, num_fill, replace = T))
+        return(vector)
+    }
+}
+
+get_single_feature = function(filename){
+    sound_info = h5read(filename, "/analysis")
+    
+    #song_name = sound_info$songs$track_id
+    num_beats = length(sound_info$beats_start)
+    num_section = length(sound_info$sections_start)
+    num_segment = length(sound_info$segments_start)
+    mean_pitch = auto_fill(colMeans(sound_info$segments_pitches), 750)
+    seg_loudness = auto_fill(sound_info$segments_loudness_max, 750)
+    seg_timbre = auto_fill(sound_info$segments_timbre, 750)
+    
+    temp_feature = c(num_beats, num_section, num_segment,  seg_loudness,seg_timbre,  mean_pitch)
+    H5close()
+    return(temp_feature)
+}
+
+get_features = function(files){
+    total = length(files)
+    feature_vector = as.numeric()
+    for (i in seq(length(files))){
+        feature_vector = c(feature_vector, get_single_feature(files[i]))
+        print(paste0(i,'/',total,' completed!'))
+    }
+    features = matrix(feature_vector, nrow = total, byrow = T)
+    features = as.data.frame(features)
+    names = sapply(files, FUN = function(x){return(substr(x,nchar(x) -20, nchar(x)-3))}, USE.NAMES = F)
+    features = cbind(names, features)
+    return(features)
+}
+
+test = get_features(files)
+
+#kmeans into 20 clusters
+km = kmeans(test[,-1], 20)
+
+song_cluster = data.frame(song = as.vector(test$names), cluster = km$cluster)
+lyr = left_join(song_cluster, lyr, by = c('song' = 'dat2$track_id'))
+lyr_prob = subset(lyr, select = -song)
+lyr_prob = aggregate(.~cluster, data = lyr_prob, sum)
+
+#probability of words for each cluster
+#the value doesn't matter, so multiply by 1000 to prevent problems on very small values
+temp = lyr_prob[,-1]
+probability = apply(temp, MARGIN = 1, FUN = function(x){return(1000*x/sum(x))})
+probability = t(probability)
+cluster_prob = as.data.frame(cbind(lyr_prob$cluster, probability))
+
+#prior probability
+load('./lyr.RData')
+lyr = lyr[,-c(2,3,6:30)]
+word_freq = colSums(lyr[,-1])
+prior_prob = 1000 * word_freq/sum(word_freq)
+
+word_rank = function(new_features){
+  #calculate distance for new features
+  new = new_features[-1]
+  
+  Total = nrow(new)
+  dis = as.matrix(dist(rbind(as.matrix(new), km$centers), upper = T))
+  new_dis = dis[1:Total,(Total+1):ncol(dis)]
+  
+  rank_list = as.numeric()
+  for(i in seq(Total)){
+      weighted_prob = t(as.matrix(cluster_prob[-1])) %*% (new_dis[i,])
+      #prior probability + clustered probability
+      final_weight = 0.2 * prior_prob + 0.8 * weighted_prob
+      #get the rank
+      rank_list = rbind(rank_list, rank(final_weight))
+  }
+  rank_list = as.data.frame(rank_list)
+  return(rank_list)
+}
