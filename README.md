@@ -10,9 +10,9 @@ Term: Fall 2016
 + [Data description](doc/readme.html)
 + Contributor's name: Zhehao Liu
 + Projec title: Words 4 Music
-+ Method used: The method used is the combination of **prior word frequency** and **clustered word frequency**. 
-- Prior word frequency: When exploring the dataset, certain words like 'a','I', 'It', 'You' etc have consistent high frequencies across most of the songs. In order to represent this pattern in the final prediction, the probability of each word in the training data is used along with the clustered word frequency.
-- Clusted word frequency: In the belief of different types of songs can have rather different word distribution in the lyrics, a feature vector including segment_loudness, segment_pitch and segment_timbre is created for each song and then used kmeans to group all the songs in the training data into 20 clusters, for each cluster probability of each word is calculated.
+- Method used: The method used is the combination of **prior word frequency** and **clustered word frequency**. 
+  - Prior word frequency: When exploring the dataset, certain words like 'a','I', 'It', 'You' etc have consistent high frequencies across most of the songs. In order to represent this pattern in the final prediction, the probability of each word in the training data is used along with the clustered word frequency.
+  - Clusted word frequency: In the belief of different types of songs can have rather different word distribution in the lyrics, a feature vector including segment_loudness, segment_pitch and segment_timbre is created for each song and then used kmeans to group all the songs in the training data into 20 clusters, for each cluster probability of each word is calculated.
 
 + Code for feature extraction and generating rank list can be found [here](lib/) 
 
