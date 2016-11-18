@@ -2,7 +2,7 @@
 
 ### [Project Description](doc/project4_desc.md)
 
-![image](http://cdn.newsapi.com.au/image/v1/f7131c018870330120dbe4b73bb7695c?width=650)
+![image](figs/2pac.jpg)
 
 Term: Fall 2016
 
