@@ -10,7 +10,7 @@ Term: Fall 2016
 + [Data description](doc/readme.html)
 + Contributor's name: Zhehao Liu
 + Projec title: Words 4 Music
-+ Method used: 
++ Method used: The method 
 + Code for feature extraction and generating rank list can be found [here](lib/) 
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
