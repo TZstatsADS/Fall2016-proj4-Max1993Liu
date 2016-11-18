@@ -8,7 +8,7 @@ Term: Fall 2016
 
 + [Data link](https://courseworks2.columbia.edu/courses/11849/files/folder/Project_Files?preview=763391)-(**coursework login required**)
 + [Data description](doc/readme.html)
-+ Contributor's name: Zhehao Liu
++ Contributor: Zhehao Liu
 
 - Method used: The method used is the combination of **prior word frequency** and **clustered word frequency**. 
   - **Prior word frequency**: When exploring the dataset, certain words like 'a','I', 'It', 'You' etc have consistent high frequencies across most of the songs. In order to represent this pattern in the final prediction, the probability of each word in the training data is used along with the clustered word frequency.
